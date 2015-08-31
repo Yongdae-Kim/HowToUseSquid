@@ -88,6 +88,7 @@ cache_effective_user squid
 cache_effective_group squid
  - 스퀴드 서버를 작동시킬 유저와 그룹명을 지정해준다.
  - 캐쉬 디렉토리의 소유자와 소유자그룹을 나타낸다.
+ - 현재 설정은 cache가 squid란 uid/gid로 작동, 보안을 위함이다.
 ```
 
 
@@ -114,10 +115,20 @@ buffered_logs on
  - 로그 기록시 사용되는 시스템 자원을 절약함으로써 약간의 속도 향상을 기대할 수 있는 옵션이다.
 ```
 
+#### 특정사이트 차단
+```
+acl blocksitelist dstdomain "blockwebsites.lst"
+http_access deny blocksitelist
+```
+```
+cat blockwebsites.lst
+www.naver.com
+www.jejunu.ac.kr
+```
 
 #### 접근 설정
 ```
- visible_hostname teach.d
+ visible_hostname 호스트이름
   - squid 서버에 특정 호스트 이름을 부여할수 있다.
 ```
 ```
@@ -128,15 +139,22 @@ acl all src 0.0.0.0/0.0.0.0
  - 자신의 프록시서버에 제한없이 모든 네트워크들이 접근할 수 있도록 설정한 후 httpd_access로 프록시 서버사용권한을 부여할 수 있다.
 ```
 ```
+acl all src 0.0.0.0/0.0.0.0
+http_access allow all
+ - 모든 네트워크들이 자신의 프록시서버를 이용할 수 있게 지정한 것이다. 
+ - 이 경우에는 네트워크 트래픽을 초래할 수 있다. 
+```
+```
 http_access deny all
  - 클라이언트가 프록시 서버에 접속을 허용할 것인지 거부할 것인지 결정해주는 옵션으로 acl과 함께 사용된다. 
  - http_access다음에 all 또는 deny를 지정하고 acl리스트 중 하나를 지정해 사용한다.
 ```
 ```
+acl user src 192.168.3.69
 acl all src 0.0.0.0/0.0.0.0
-http_access allow all
- - 모든 네트워크들이 자신의 프록시서버를 이용할 수 있게 지정한 것이다. 
- - 이 경우에는 네트워크 트래픽을 초래할 수 있다. 
+http_access allow ser
+http_access deny all
+ - 192.168.3.69 네트워크주소를 user 만 프록시서버 접속을 허용하고, 다른 네트워크에 대해서는 접속을 거부한다.
 ```
 ```
 acl members src 192.168.3.0/255.255.255.0
@@ -144,17 +162,6 @@ acl all src 0.0.0.0/0.0.0.0
 http_access allow members
 http_access deny all
  - 192.168.3.0 네트워크주소를 members 범위로 규정하여 http_access 에서 프록시서버 접속을 허용하고, 다른 네트워크에 대해서는 접속을 거부한다.
-```
-
-#### 특정사이트 차단
-```
-acl blocksitelist dstdomain "blockwebsites.lst"
-http_access deny blocksitelist
-```
-```
-cat blockwebsites.lst
-www.naver.com
-www.jejunu.ac.kr
 ```
 
 ---
@@ -198,9 +205,11 @@ www.jejunu.ac.kr
     - ***service squid restart***
     
     
- 8. 데몬 확인
+ 8. 실행중인 데몬 확인
  
- 	***ps -ef | grep squid***
+ 	- ***service squid status***
+ 	
+ 	- ***ps -ef | grep squid***
 
 ---
 
@@ -213,26 +222,38 @@ www.jejunu.ac.kr
 ### 크롬(Chrome)
 
 ###### 1. 크롬 맞춤설정 및 제어에서 '설정' 탭을 클릭 
-![squid_1](chrome_1.png)
+![chrome_1](images/chrome_1.png)
 ###### 2. '고급 설정 표시' 클릭  
-![squid_2](chrome_2.png)
+![chrome_2](images/chrome_2.png)
 ###### 3. '프록시 설정 변경' 클릭 
-![squid_3](chrome_3.png)
+![chrome_3](images/chrome_3.png)
 ##### 4. 프록시 서버 IP 와 Port 를 설정 후 승인
-![squid_4](chrome_4.png)
+![chrome_4](images/chrome_4.png)
 
 ---
 
 ### 파이어폭스(Firefox)
 
 ###### 1. 파이어폭스 메뉴 열기에서 '환경' 탭을 클릭 
-![squid_1](firefox_1.png)
+![firefox_1](images/firefox_1.png)
 ###### 2. '고급 설정'에서 '네트워크' 탭에서 '설정' 클릭  
-![squid_2](firefox_2.png)
+![firefox_2](images/firefox_2.png)
 ###### 3. '프록시 수동 설정' 에서 프록시 서버 IP 와 Port 를 설정 후 확인
-![squid_3](firefox_3.png)
+![firefox_3](images/firefox_3.png)
 
 ___
+
+## 주의사항
+ - ***접근 설정 순서***
+ 	1. 특정사이트 차단
+ 	2. 접근 설정
+ 	3. 나머지 사용자 차단(*'http_access deny all'*)
+ - ***모든 사용자*** 가 캐시(cache) 디렉토리 접근을 위해 접근권한 (*chmod 777*)을 줘야함
+ - 그래도, 캐시(cache) 디렉토리 접근을 못할 시 ***소유자 와 소유자 그룹*** 을 확인
+ - 특정사이트 차단 파일을 통해 설정 시, 파일 안에 아무내용이 없을 경우 경고를 출력함
+ - 스퀴드를 실행하는 중에 에러가 발생할 경우 ***'/var/log/messages'*** 를 확인
+
+---
 
 ## 참고자료
 
