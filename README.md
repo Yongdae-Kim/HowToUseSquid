@@ -88,7 +88,7 @@ cache_effective_user squid
 cache_effective_group squid
  - 스퀴드 서버를 작동시킬 유저와 그룹명을 지정해준다.
  - 캐쉬 디렉토리의 소유자와 소유자그룹을 나타낸다.
- - 현재 설정은 cache가 squid란 uid/gid로 작동, 보안을 위함이다.
+ - 현재 설정은 cache 가 squid 란 uid/gid 로 작동하도록 설정한다.
 ```
 
 
