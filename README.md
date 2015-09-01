@@ -43,14 +43,14 @@
 
 ## 스퀴드(Squid) 구성
 
-1. bin : squid 실행과 관련된 스크립트 파일이 있는 디렉토리
-2. etc : squid 관련 환경 설정 파일인 **squid.conf** 가 있는 디렉토리
-3. libexec : 서버운영과 관련된 스크립트 파일이 있는 디렉토리
-4. lib : 프로그램 개발에 필요한 라이브러리 정보들이 있는 디렉토리
-5. man : **man** 명령 관련 정보들이 있는 디렉토리
-6. sbin : squid 서버를 실행하고 관리하는 **squid** 라는 명령이 위치하는 디렉토리
-7. share : squid 를 사용하면서 발생하는 에러 메시지에 대한 정보들이 있는 디렉토리
-8. var : 로그 파일에 대한 정보들이 있는 디렉토리
+1. squid/bin : squid 실행과 관련된 스크립트 파일이 있는 디렉토리
+2. squid/etc : squid 관련 환경 설정 파일인 **squid.conf** 가 있는 디렉토리
+3. squid/libexec : 서버운영과 관련된 스크립트 파일이 있는 디렉토리
+4. squid/lib : 프로그램 개발에 필요한 라이브러리 정보들이 있는 디렉토리
+5. squid/man : **man** 명령 관련 정보들이 있는 디렉토리
+6. squid/sbin : squid 서버를 실행하고 관리하는 **squid** 라는 명령이 위치하는 디렉토리
+7. squid/share : squid 를 사용하면서 발생하는 에러 메시지에 대한 정보들이 있는 디렉토리
+8. squid/var : 로그 파일에 대한 정보들이 있는 디렉토리
 
 ---
 
@@ -86,8 +86,7 @@ cache_mgr admin
 ```
 cache_effective_user squid
 cache_effective_group squid
- - 스퀴드 서버를 작동시킬 유저와 그룹명을 지정해준다.
- - 캐쉬 디렉토리의 소유자와 소유자그룹을 나타낸다.
+ - 스퀴드 서버 캐쉬 디렉토리의 소유자와 소유자그룹을 나타낸다.
  - 현재 설정은 cache 가 squid 란 uid/gid 로 작동하도록 설정한다.
 ```
 
@@ -219,7 +218,9 @@ http_access deny all
 
 ---
 
-### 크롬(Chrome)
+### PC 의 경우
+
+#### 크롬(Chrome)
 
 ###### 1. 크롬 맞춤설정 및 제어에서 '설정' 탭을 클릭 
 ![chrome_1](images/chrome_1.png)
@@ -232,7 +233,7 @@ http_access deny all
 
 ---
 
-### 파이어폭스(Firefox)
+#### 파이어폭스(Firefox)
 
 ###### 1. 파이어폭스 메뉴 열기에서 '환경' 탭을 클릭 
 ![firefox_1](images/firefox_1.png)
@@ -242,6 +243,14 @@ http_access deny all
 ![firefox_3](images/firefox_3.png)
 
 ___
+
+### Mobile(Android) 의 경우
+
+###### 1. 무선네트워크를 길게 누르고, '네트워크 설정 변경' 클릭
+###### 2. '고급 옵션 표시' 체크박스를 설정하고 '아이피 와 포트번호' 입력 후 저장 
+![firefox_2](images/android_1.png)
+
+---
 
 ## 주의사항
  - ***접근 설정 순서***
